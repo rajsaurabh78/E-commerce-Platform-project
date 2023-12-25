@@ -2,8 +2,8 @@ package com.ShopifyLite.repository;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import com.ShopifyLite.model.Quantity;
+import com.ShopifyLite.model.Cart;
 
-public interface QuantityRepo extends MongoRepository<Quantity,Integer>{
+public interface QuantityRepo extends MongoRepository<Cart,Integer>{
 
 }
