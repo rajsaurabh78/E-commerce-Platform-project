@@ -11,7 +11,7 @@ public interface ProductService{
 	public String deleteProduct(Integer pId);
 	public List<Product> getProductByName(String name);
 	public List<Product> getProductByType(String type);
-	public List<Product> getProductByPrice(String name,Integer price);
-	public List<Product> getAllProduct(String direction,String type,Integer page,String No);
+	public List<Product> getProductByPrice(Integer price);
+	public List<Product> getAllProduct(String direction,String type,Integer page,Integer No);
 	
 }
