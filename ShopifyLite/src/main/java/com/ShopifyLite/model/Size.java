@@ -1,8 +1,11 @@
 package com.ShopifyLite.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.Id;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -13,9 +16,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-@Document( collection = "Size" )
+@Entity
 public class Size {
 	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator ="Size_seq")
+	@SequenceGenerator(name="Size_seq", sequenceName="Size_seq",allocationSize=1, initialValue=1)
 	private Integer sId;
 	private String type;
 	

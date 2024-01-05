@@ -1,10 +1,14 @@
 package com.ShopifyLite.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,14 +18,16 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-@Document(collation = "Role")
+@Entity
 public class Authority {
 	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator ="authority_seq")
+	@SequenceGenerator(name="authority_seq", sequenceName="authority_seq",allocationSize=1, initialValue=500)
 	private Integer id;
 	
 	private String name;
 	
-//	@ManyToOne
+	@ManyToOne
 	@JsonIgnore
 	private Users user;
 

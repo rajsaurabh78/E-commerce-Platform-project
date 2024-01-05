@@ -1,8 +1,10 @@
 package com.ShopifyLite.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -13,9 +15,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-@Document( collection = "Address" )
+@Entity
 public class Address {
 	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator ="address_seq")
+	@SequenceGenerator(name="address_seq", sequenceName="address_seq",allocationSize=1, initialValue=1)
 	private Integer aId;
 	private String flatNo;
 	private String addressLine1;

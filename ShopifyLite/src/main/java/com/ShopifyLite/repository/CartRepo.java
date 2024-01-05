@@ -1,9 +1,9 @@
 package com.ShopifyLite.repository;
 
-import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.ShopifyLite.model.Cart;
 
-public interface CartRepo extends MongoRepository<Cart,Integer>{
+public interface CartRepo extends JpaRepository<Cart,Integer>{
 
 }

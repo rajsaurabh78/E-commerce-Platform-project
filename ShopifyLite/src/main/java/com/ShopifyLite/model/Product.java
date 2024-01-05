@@ -2,9 +2,12 @@ package com.ShopifyLite.model;
 
 import java.time.LocalDate;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
+import jakarta.persistence.Id;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -15,9 +18,11 @@ import lombok.Setter;
 @AllArgsConstructor
 @Setter
 @Getter
-@Document( collection = "Product" )
+@Entity
 public class Product {
 	@Id
+	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator ="product_seq")
+	@SequenceGenerator(name="product_seq", sequenceName="product_seq",allocationSize=1, initialValue=1)
 	private Integer pId;
 	private String name;
 	private String type;

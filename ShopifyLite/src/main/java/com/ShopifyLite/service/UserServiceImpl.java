@@ -1,5 +1,6 @@
 package com.ShopifyLite.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -7,12 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import com.ShopifyLite.exception.AmountException;
 import com.ShopifyLite.exception.UserException;
+import com.ShopifyLite.model.Authority;
 import com.ShopifyLite.model.Users;
 import com.ShopifyLite.repository.UserRepo;
-
+@Service
 public class UserServiceImpl implements UserService{
 	
 	@Autowired
@@ -21,6 +24,11 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public String addUser(Users user) {
 		//
+		List<Authority> auths=user.getAuthorities();
+		for(Authority i:auths) {
+			i.setName("ROLE_"+i.getName().toUpperCase());
+			i.setUser(user);
+		}
 		Users u=userRepo.save(user);
 		return "User saves with userId : "+u.getUserId();
 	}
