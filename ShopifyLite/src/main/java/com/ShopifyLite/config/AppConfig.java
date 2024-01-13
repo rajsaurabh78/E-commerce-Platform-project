@@ -40,13 +40,15 @@ public SecurityFilterChain springSecurityConfiguration(HttpSecurity http) throws
 			auth
 			.requestMatchers(HttpMethod.POST, "/register/**")
 			.permitAll()
-			.requestMatchers("/swagger-ui*/**","/v3/api-docs/**").permitAll()
-			.requestMatchers(HttpMethod.POST,"/admin/**").hasRole("ADMIN")
-			.requestMatchers(HttpMethod.PUT,"/admin/**").hasRole("ADMIN")
-			.requestMatchers(HttpMethod.GET,"/admin/**").hasRole("ADMIN")
-			.requestMatchers(HttpMethod.DELETE,"/admin/**").hasRole("ADMIN")
-			.requestMatchers(HttpMethod.GET,"/students/**").hasAnyRole("ADMIN","USER","STUDENT")
-			.anyRequest().authenticated();
+			.requestMatchers(HttpMethod.PUT, "/product/**")
+			.permitAll();
+//			.requestMatchers("/swagger-ui*/**","/v3/api-docs/**").permitAll()
+//			.requestMatchers(HttpMethod.POST,"/admin/**").hasRole("ADMIN")
+//			.requestMatchers(HttpMethod.PUT,"/admin/**").hasRole("ADMIN")
+//			.requestMatchers(HttpMethod.GET,"/admin/**").hasRole("ADMIN")
+//			.requestMatchers(HttpMethod.DELETE,"/admin/**").hasRole("ADMIN")
+//			.requestMatchers(HttpMethod.GET,"/students/**").hasAnyRole("ADMIN","USER","STUDENT")
+//			.anyRequest().authenticated();
 		})
 		.csrf(csrf -> csrf.disable())
 		.addFilterAfter(new JwtTokenGeneratorFilter(), BasicAuthenticationFilter.class)

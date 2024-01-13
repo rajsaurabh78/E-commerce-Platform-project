@@ -1,6 +1,5 @@
 package com.ShopifyLite.service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ShopifyLite.exception.AmountException;
@@ -20,10 +20,14 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private UserRepo userRepo;
+	
+	@Autowired
+	private PasswordEncoder encoder;
 
 	@Override
 	public String addUser(Users user) {
 		//
+		user.setPassword(encoder.encode(user.getPassword()));
 		List<Authority> auths=user.getAuthorities();
 		for(Authority i:auths) {
 			i.setName("ROLE_"+i.getName().toUpperCase());
@@ -41,12 +45,22 @@ public class UserServiceImpl implements UserService{
 			//Here we get my user
 			Users usr=opt.get();
 			//updated its field
-			usr.setDob(user.getDob());
-			usr.setEmail(user.getEmail());
-			usr.setName(user.getName());
-			//
-			usr.setPassword(user.getPassword());
-			usr.setPhone(user.getPhone());
+			if(user.getDob()!=null) {
+				usr.setDob(user.getDob());
+			}
+			if(user.getEmail()!=null) {
+				usr.setEmail(user.getEmail());
+			}
+			if(user.getName()!=null) {
+				usr.setName(user.getName());
+			}
+			//Here update only if password is there
+			if(user.getPassword()!=null) {
+				usr.setPassword(encoder.encode(user.getPassword()));
+			}
+			if(user.getPhone()!=null) {
+				usr.setPhone(user.getPhone());
+			}
 			//Saved updated user
 			userRepo.save(usr);
 			return "user updated successfully";
@@ -66,7 +80,7 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public String addAmount(Integer userId, Integer amount) {
+	public String addAmount(Integer userId, Float amount) {
 		Optional<Users> opt=userRepo.findById(userId);
 		if(opt.isPresent()) {
 			//Here we get my user and add amount
@@ -89,9 +103,9 @@ public class UserServiceImpl implements UserService{
 				//and withdraw amount
 				user.setAmount(user.getAmount()-amount);
 				userRepo.save(user);
-				return "Amount added successfully";
+				return "Amount withdrawal successfully";
 			}else
-				throw new AmountException("Insufficient userId.");
+				throw new AmountException("Insufficient balance.");
 		}else
 			throw new UserException("Inviled userId.");
 	}

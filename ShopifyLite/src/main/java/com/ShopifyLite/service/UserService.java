@@ -9,7 +9,7 @@ public interface UserService{
 	public String addUser(Users user);
 	public String updateUser(Users user);
 	public String deleteUser(Integer userId);
-	public String addAmount(Integer userId,Integer amount);
+	public String addAmount(Integer userId,Float amount);
 	public String withdrawAmount(Integer userId,Integer amount);
 	public Users getUserById(Integer userId);
 	public List<Users> getUserByName(String name);

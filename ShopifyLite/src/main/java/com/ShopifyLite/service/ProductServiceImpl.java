@@ -7,12 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import com.ShopifyLite.exception.ProductException;
 import com.ShopifyLite.exception.UserException;
 import com.ShopifyLite.model.Product;
 import com.ShopifyLite.repository.ProductRepo;
-
+@Service
 public class ProductServiceImpl implements ProductService{
 	
 	@Autowired
@@ -33,10 +34,19 @@ public class ProductServiceImpl implements ProductService{
 			throw new ProductException("Inviled product Id");
 		}else {
 			Product p=opt.get();
-			p.setManufactureDate(product.getManufactureDate());
-			p.setName(product.getName());
-			p.setPrice(product.getPrice());
-			p.setType(product.getType());
+			if(p.getManufactureDate()!=null) {
+				p.setManufactureDate(product.getManufactureDate());
+			}
+			if(p.getName()!=null) {
+				p.setName(product.getName());
+			}
+			if(p.getPrice()!=null) {
+				p.setPrice(product.getPrice());
+			}
+			if(p.getType()!=null) {
+				p.setType(product.getType());
+			}
+		
 			productRepo.save(p);
 			return "Updated";
 		}
