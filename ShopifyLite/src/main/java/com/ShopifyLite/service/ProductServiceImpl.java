@@ -1,5 +1,6 @@
 package com.ShopifyLite.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,20 +11,54 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.ShopifyLite.exception.ProductException;
+import com.ShopifyLite.exception.SizeException;
 import com.ShopifyLite.exception.UserException;
 import com.ShopifyLite.model.Product;
+import com.ShopifyLite.model.Quantity;
+import com.ShopifyLite.model.Size;
 import com.ShopifyLite.repository.ProductRepo;
+import com.ShopifyLite.repository.QuantityRepo;
+import com.ShopifyLite.repository.SizeRepo;
+
+import jakarta.transaction.Transactional;
 @Service
+@Transactional
 public class ProductServiceImpl implements ProductService{
 	
 	@Autowired
 	private ProductRepo productRepo;
+	
+    @Autowired
+    private QuantityRepo quantityRepo;
+    
+    @Autowired
+    private SizeRepo sizeRepo;
 
 	@Override
+	@Transactional
 	public String addProduct(Product product) {
-		
+		String str=product.getSizeQuan();
+        List<Quantity> qList=new ArrayList<>();
+        String[] pairs = str.split(",");
+        for (int i=0;i<pairs.length-1;i+=2) {
+    		Optional<Size> opt=sizeRepo.findByType(pairs[i].toLowerCase());
+    		if(opt.isPresent()) {
+    			Quantity q=new Quantity();
+    			Size size=opt.get();
+    			q.setTotal(Integer.parseInt(pairs[i + 1]));
+    			q.setSize(size);
+    			q.setProduct(product);
+    			qList.add(q);
+    			
+    		}else
+    			throw new SizeException("Inviled size.");
+        }
+        
+        product.setQuantityList(qList);
+        quantityRepo.saveAll(qList);
 		productRepo.save(product);
 		return "Product added.";
+
 	}
 
 	@Override

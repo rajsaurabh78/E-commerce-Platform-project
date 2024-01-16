@@ -1,9 +1,12 @@
 package com.ShopifyLite.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,5 +31,9 @@ public class Address {
 	private String district;
 	private String state;
 	private String pinCode;
+	
+	@ManyToOne
+	@JsonIgnore
+	private Users user;
 	
 }

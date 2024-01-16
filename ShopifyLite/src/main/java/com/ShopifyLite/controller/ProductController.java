@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ShopifyLite.model.Product;
+import com.ShopifyLite.model.Size;
 import com.ShopifyLite.service.ProductService;
+import com.ShopifyLite.service.SizeService;
 
 import jakarta.validation.Valid;
 
@@ -20,11 +22,18 @@ public class ProductController {
 	
 	@Autowired
 	private ProductService productService;
-	
+	@Autowired
+	private SizeService sizeService;
 	
 	@PostMapping("/product")
 	public ResponseEntity<String> addProductController(@Valid @RequestBody Product product){
 		String res=productService.addProduct(product);
+		return new ResponseEntity<>(res,HttpStatus.CREATED);
+	}
+	
+	@PostMapping("/size")
+	public ResponseEntity<String> addSizeController(@Valid @RequestBody Size size){
+		String res=sizeService.addSize(size);
 		return new ResponseEntity<>(res,HttpStatus.CREATED);
 	}
 	
