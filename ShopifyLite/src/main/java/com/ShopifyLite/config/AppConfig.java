@@ -38,9 +38,13 @@ public SecurityFilterChain springSecurityConfiguration(HttpSecurity http) throws
 		});
 		}).authorizeHttpRequests(auth ->{
 			auth
-			.requestMatchers(HttpMethod.POST, "/size/**")
+			.requestMatchers(HttpMethod.POST, "/**")
 			.permitAll()
-			.requestMatchers(HttpMethod.POST, "/product/**")
+			.requestMatchers(HttpMethod.PUT, "/**")
+			.permitAll()
+			.requestMatchers(HttpMethod.DELETE, "/**")
+			.permitAll()
+			.requestMatchers(HttpMethod.GET, "/**")
 			.permitAll();
 //			.requestMatchers("/swagger-ui*/**","/v3/api-docs/**").permitAll()
 //			.requestMatchers(HttpMethod.POST,"/admin/**").hasRole("ADMIN")

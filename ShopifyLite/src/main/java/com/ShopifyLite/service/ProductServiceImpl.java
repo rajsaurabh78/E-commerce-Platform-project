@@ -62,26 +62,51 @@ public class ProductServiceImpl implements ProductService{
 	}
 
 	@Override
+	@Transactional
 	public String updateProduct(Product product) {
 
-		Optional<Product> opt=productRepo.findById(product.getPId());
+		Optional<Product> opt=productRepo.findById(product.getPid());
 		if(opt.isEmpty()) {
 			throw new ProductException("Inviled product Id");
 		}else {
 			Product p=opt.get();
-			if(p.getManufactureDate()!=null) {
+			if(product.getManufactureDate()!=null) {
 				p.setManufactureDate(product.getManufactureDate());
 			}
-			if(p.getName()!=null) {
+			if(product.getName()!=null) {
 				p.setName(product.getName());
 			}
-			if(p.getPrice()!=null) {
+			if(product.getPrice()!=null) {
 				p.setPrice(product.getPrice());
 			}
-			if(p.getType()!=null) {
+			if(product.getType()!=null) {
 				p.setType(product.getType());
 			}
-		
+			
+			if(product.getSizeQuan()!=null) {
+				List<Quantity> qList=new ArrayList<>();
+				String str=product.getSizeQuan();
+		        String[] pairs = str.split(",");
+		        for (int i=0;i<pairs.length-1;i+=2) {
+		        	int x=productRepo.updateTotal(Integer.parseInt(pairs[i + 1]), product.getPid(),pairs[i].toLowerCase());
+		    		if(x==0) {
+			        	Optional<Size> opt2=sizeRepo.findByType(pairs[i].toLowerCase());
+			    		if(opt2.isPresent()) {
+			    			Quantity q=new Quantity();
+			    			Size size=opt2.get();
+			    			q.setTotal(Integer.parseInt(pairs[i + 1]));
+			    			q.setSize(size);
+			    			q.setProduct(product);
+			    			qList.add(q);
+			    			
+			    		}else
+			    			throw new SizeException("Inviled size.");
+		    		}
+		        }
+		        product.setQuantityList(qList);
+		        quantityRepo.saveAll(qList);
+			}
+			
 			productRepo.save(p);
 			return "Updated";
 		}

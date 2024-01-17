@@ -23,7 +23,7 @@ public class Address {
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator ="address_seq")
 	@SequenceGenerator(name="address_seq", sequenceName="address_seq",allocationSize=1, initialValue=1)
-	private Integer aId;
+	private Integer aid;
 	private String flatNo;
 	private String addressLine1;
 	private String addressLine2;

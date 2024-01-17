@@ -21,7 +21,7 @@ public class Size {
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator ="Size_seq")
 	@SequenceGenerator(name="Size_seq", sequenceName="Size_seq",allocationSize=1, initialValue=1)
-	private Integer sId;
+	private Integer sid;
 	@Column(unique = true)
 	private String type;
 	

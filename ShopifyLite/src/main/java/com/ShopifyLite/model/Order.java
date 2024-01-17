@@ -28,7 +28,7 @@ public class Order {
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator ="order_seq")
 	@SequenceGenerator(name="order_seq", sequenceName="order_seq",allocationSize=1, initialValue=1)
-	private Integer oId;
+	private Integer oid;
 	private Integer totalPrice;
 	
 	@OneToMany(mappedBy = "order",cascade = CascadeType.ALL,fetch = FetchType.EAGER)

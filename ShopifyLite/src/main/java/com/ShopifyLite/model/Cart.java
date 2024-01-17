@@ -11,7 +11,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
@@ -29,13 +28,13 @@ public class Cart {
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator ="cart_seq")
 	@SequenceGenerator(name="cart_seq", sequenceName="cart_seq",allocationSize=1, initialValue=1)
-	private Integer cId;
+	private Integer cid;
 	private Integer amount;
 	
 	@OneToMany(mappedBy = "cart",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<Users> userList=new ArrayList<>();
 	
-	@ManyToMany
+	@OneToMany(mappedBy = "cart",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<Product> productList=new ArrayList<>();
 	
 }

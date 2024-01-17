@@ -13,8 +13,14 @@ import org.springframework.stereotype.Service;
 import com.ShopifyLite.exception.AmountException;
 import com.ShopifyLite.exception.UserException;
 import com.ShopifyLite.model.Authority;
+import com.ShopifyLite.model.Cart;
+import com.ShopifyLite.model.Order;
 import com.ShopifyLite.model.Users;
+import com.ShopifyLite.repository.CartRepo;
+import com.ShopifyLite.repository.OrderRepo;
 import com.ShopifyLite.repository.UserRepo;
+
+import jakarta.transaction.Transactional;
 @Service
 public class UserServiceImpl implements UserService{
 	
@@ -22,9 +28,16 @@ public class UserServiceImpl implements UserService{
 	private UserRepo userRepo;
 	
 	@Autowired
+	private CartRepo cartRepo;
+	
+	@Autowired
+	private OrderRepo orderRepo;
+	
+	@Autowired
 	private PasswordEncoder encoder;
 
 	@Override
+	@Transactional
 	public String addUser(Users user) {
 		//
 		user.setPassword(encoder.encode(user.getPassword()));
@@ -33,6 +46,14 @@ public class UserServiceImpl implements UserService{
 			i.setName("ROLE_"+i.getName().toUpperCase());
 			i.setUser(user);
 		}
+		Cart cart=new Cart();
+		Order order=new Order();
+		
+		cartRepo.save(cart);
+		
+		orderRepo.save(order);
+		user.setOrder(order);
+		user.setCart(cart);
 		Users u=userRepo.save(user);
 		return "User saves with userId : "+u.getUserId();
 	}

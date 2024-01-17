@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
@@ -12,7 +13,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
@@ -30,7 +32,7 @@ public class Product {
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator ="product_seq")
 	@SequenceGenerator(name="product_seq", sequenceName="product_seq",allocationSize=1, initialValue=1)
-	private Integer pId;
+	private Integer pid;
 	private String name;
 	private String type;
 	private Integer price;
@@ -38,8 +40,13 @@ public class Product {
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String sizeQuan;
 	
-	@ManyToMany(mappedBy = "productList",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-	private List<Cart> cartList=new ArrayList<>();
+//	@ManyToMany(mappedBy = "productList",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+//	private List<Cart> cartList=new ArrayList<>();
+	
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "cid")
+    private Cart cart;
 	
 	@OneToMany(mappedBy = "product",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<Quantity> quantityList=new ArrayList<>();
