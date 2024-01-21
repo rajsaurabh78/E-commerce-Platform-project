@@ -13,8 +13,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
@@ -43,10 +42,9 @@ public class Product {
 //	@ManyToMany(mappedBy = "productList",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 //	private List<Cart> cartList=new ArrayList<>();
 	
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "cid")
-    private Cart cart;
+//    @ManyToMany
+//    @JsonIgnore
+//    private List<Cart> cartList=new ArrayList<>();
 	
 	@OneToMany(mappedBy = "product",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<Quantity> quantityList=new ArrayList<>();

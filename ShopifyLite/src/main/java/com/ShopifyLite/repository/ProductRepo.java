@@ -19,4 +19,7 @@ public interface ProductRepo extends JpaRepository<Product,Integer>{
 	 @Modifying
 	 @Query(value="UPDATE Quantity q SET q.total = :total WHERE q.pid =:pid AND q.sid = (SELECT sid FROM Size WHERE type =:sizeType)",nativeQuery =true)
 	 int updateTotal(@Param("total") int total, @Param("pid") int pid, @Param("sizeType") String sizeType);
+	 
+	 @Query(value = "select q.total from quantity q inner join size s on(q.sId=s.sId) where s.type=:size and q.pid =:pid",nativeQuery =true)
+	 int getSizes(@Param("size")String size, @Param("pid") int pid);
 }

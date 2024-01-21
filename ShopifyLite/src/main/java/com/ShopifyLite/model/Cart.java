@@ -11,6 +11,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
@@ -34,7 +35,10 @@ public class Cart {
 	@OneToMany(mappedBy = "cart",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<Users> userList=new ArrayList<>();
 	
+//	@ManyToMany(mappedBy = "cartList",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+//	private List<Product> productList=new ArrayList<>();
+	
 	@OneToMany(mappedBy = "cart",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-	private List<Product> productList=new ArrayList<>();
+	private List<ProductDetails> productDetailsList =new ArrayList<>();
 	
 }

@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService{
 		}
 		Cart cart=new Cart();
 		Order order=new Order();
-		
+		cart.setAmount(0);
 		cartRepo.save(cart);
 		
 		orderRepo.save(order);
