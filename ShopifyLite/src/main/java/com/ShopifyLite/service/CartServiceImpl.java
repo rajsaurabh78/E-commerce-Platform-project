@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 import com.ShopifyLite.exception.CartException;
@@ -37,7 +38,7 @@ public class CartServiceImpl implements CartService{
 
 	@Override
 	@Transactional
-	public String addItem(Integer userId, Integer pId,String size,Integer quantity) {
+	public String addItem(Integer userId, Integer pId,String size) {
 		//checking user exist or not
 		Optional<Users> opt=userRepo.findById(userId);
 		if(opt.isPresent()) {
@@ -55,7 +56,7 @@ public class CartServiceImpl implements CartService{
 				} catch (Exception e) {
 					throw new ProductException("Inviled size.");
 				}
-				if(s<quantity) {
+				if(s<1) {
 					throw new ProductException("Inviled quantity avalible quantity : "+s);
 				}
 				//we get cart of user
@@ -65,13 +66,13 @@ public class CartServiceImpl implements CartService{
 				if(productList.size()==0) {
 					ProductDetails productDet=new ProductDetails();
 					productDet.setSize(size);
-					productDet.setQuantity(quantity);
+					productDet.setQuantity(1);
 					productDet.setPid(pId);
-					productDet.setAmount(quantity*product.getPrice());
+					productDet.setPrice(productDet.getQuantity()*product.getPrice());
 					productDet.setCart(cart);
 					List<ProductDetails> plist=new ArrayList<>();
 					plist.add(productDet);
-					cart.setAmount(cart.getAmount()+productDet.getAmount());
+					cart.setAmount(cart.getAmount()+productDet.getPrice());
 					cart.setProductDetailsList(plist);	
 					productDetailsRepo.save(productDet);
 			//		cartRepo.save(cart);
@@ -86,11 +87,11 @@ public class CartServiceImpl implements CartService{
 					}else {
 						ProductDetails productDet=new ProductDetails();
 						productDet.setSize(size);
-						productDet.setQuantity(quantity);
+						productDet.setQuantity(1);
 						productDet.setPid(pId);
-						productDet.setAmount(quantity*product.getPrice());
+						productDet.setPrice(productDet.getQuantity()*product.getPrice());
 						productDet.setCart(cart);	
-						cart.setAmount(cart.getAmount()+productDet.getAmount());
+						cart.setAmount(cart.getAmount()+productDet.getPrice());
 						cartRepo.save(cart);
 						productDetailsRepo.save(productDet);
 					}	
@@ -103,18 +104,28 @@ public class CartServiceImpl implements CartService{
 	}
 
 	@Override
-	public String deleteItem(Integer userId, Integer pId) {
+	@Transactional
+	@Modifying
+	public String deleteItem(Integer userId, Integer pId,String size) {
 
 		Optional<Users> opt=userRepo.findById(userId);
 		if(opt.isPresent()) {
 			Users user=opt.get();
 			Optional<Product> opt2=productRepo.findById(pId);
 			if(opt2.isPresent()) {
-				int x=cartRepo.deleteItem(pId,user.getCart().getCid());
-				if(x==0) {
-					throw new CartException("Item not present in cart.");
-				}else
-					return "product removed.";
+				List<ProductDetails> pd=user.getCart().getProductDetailsList();
+				// Use Stream API to find the product to remove
+			    Optional<ProductDetails> productToRemove = pd.stream()
+			            .filter(p -> p.getPid() == pId && p.getSize().equalsIgnoreCase(size))
+			            .findFirst();		    
+			    if (productToRemove.isPresent()) {
+			        // Remove the product from the list and delete it from the database
+			        ProductDetails productDetails = productToRemove.get();
+			        pd.remove(productDetails);
+			        productDetailsRepo.delete(productDetails);
+			        return "Product removed.";
+			    }else
+			    	throw new CartException("Item not present in cart.");
 			}else
 				throw new ProductException("Invilid product id : "+pId);
 		}else
@@ -123,19 +134,18 @@ public class CartServiceImpl implements CartService{
 	}
 
 	@Override
-	public List<Product> getAllCartItem(Integer userId) {
+	public List<ProductDetails> getAllCartItem(Integer userId) {
 
-//		Optional<Users> opt=userRepo.findById(userId);
-//		if(opt.isPresent()) {
-//			Users user=opt.get();
-//			List<Product> list= user.getCart().getProductList();
-//			if(list.size()>0) {
-//				return list;
-//			}else
-//				throw new ProductException("Empty list.");
-//		}else
-//			throw new UserException("Invilid user id : "+userId);
-		return null;
+		Optional<Users> opt=userRepo.findById(userId);
+		if(opt.isPresent()) {
+			Users user=opt.get();
+			List<ProductDetails> pd=user.getCart().getProductDetailsList();
+			if(pd.size()>0) {
+				return pd;
+			}else
+				throw new ProductException("Empty list.");
+		}else
+			throw new UserException("Invilid user id : "+userId);
 	}
 
 }

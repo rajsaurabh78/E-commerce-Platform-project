@@ -27,7 +27,7 @@ public class ProductDetails {
 	@SequenceGenerator(name="ProductDetails_seq", sequenceName="ProductDetails_seq",allocationSize=1, initialValue=1)
 	private Integer cdid;
 	private Integer pid;
-	private Integer amount;
+	private Integer price;
 	private Integer quantity;
 	private String Size;
 	
@@ -35,5 +35,9 @@ public class ProductDetails {
 	@ManyToOne
 	@JsonIgnore
 	private Cart cart;
+	
+	@ManyToOne
+	@JsonIgnore
+	private Order order;
 	
 }

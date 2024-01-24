@@ -55,6 +55,7 @@ public class ProductServiceImpl implements ProductService{
         }
         
         product.setQuantityList(qList);
+        product.setSizeQuan(null);
         quantityRepo.saveAll(qList);
 		productRepo.save(product);
 		return "Product added.";

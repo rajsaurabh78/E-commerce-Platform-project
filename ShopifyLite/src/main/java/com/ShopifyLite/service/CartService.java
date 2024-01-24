@@ -2,12 +2,12 @@ package com.ShopifyLite.service;
 
 import java.util.List;
 
-import com.ShopifyLite.model.Product;
+import com.ShopifyLite.model.ProductDetails;
 
 public interface CartService{
 	
-	public String addItem(Integer userId,Integer pId,String size,Integer quantity);
-	public String deleteItem(Integer userId,Integer pId);
-	public List<Product> getAllCartItem(Integer userId);
+	public String addItem(Integer userId,Integer pId,String size);
+	public String deleteItem(Integer userId,Integer pId,String size);
+	public List<ProductDetails> getAllCartItem(Integer userId);
 	
 }
