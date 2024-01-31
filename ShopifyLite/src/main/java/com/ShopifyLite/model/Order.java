@@ -34,7 +34,7 @@ public class Order {
 	@OneToMany(mappedBy = "order",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<Users> userList =new ArrayList<>();
 	
-	@OneToMany(mappedBy = "order",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "order")
 	private List<ProductDetails> productDetailsList =new ArrayList<>();
 	
 }

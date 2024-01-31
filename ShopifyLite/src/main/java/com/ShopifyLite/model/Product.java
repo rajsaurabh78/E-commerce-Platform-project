@@ -7,11 +7,13 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import lombok.AllArgsConstructor;
@@ -32,19 +34,19 @@ public class Product {
 	private Integer pid;
 	private String name;
 	private String type;
+	@Lob
+	@Column(name = "image", columnDefinition = "MEDIUMBLOB")
+    private byte[] image;
 	private Integer price;
 	private LocalDate manufactureDate;
 	@JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
 	private String sizeQuan;
 	
-//	@ManyToMany(mappedBy = "productList",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-//	private List<Cart> cartList=new ArrayList<>();
-	
-//    @ManyToMany
-//    @JsonIgnore
-//    private List<Cart> cartList=new ArrayList<>();
 	
 	@OneToMany(mappedBy = "product",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<Quantity> quantityList=new ArrayList<>();
+	
+
+	
 	
 }

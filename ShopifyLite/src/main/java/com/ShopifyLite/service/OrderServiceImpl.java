@@ -38,69 +38,83 @@ public class OrderServiceImpl implements OrderService{
 
 	@Override
 	@Transactional
-	public String addOrder(Integer userId, Integer[] pidList,String size,Integer quantity) {
-	//	List<Product> plist=new ArrayList<>();
-		for(Integer pid:pidList) {
-			Optional<Users> opt=userRepo.findById(userId);
-			if(opt.isPresent()) {
-				//we got user
-				Users user=opt.get();
-				//checking product exist or not
-				Optional<Product> opt2=productRepo.findById(pid);
-				if(opt2.isPresent()) {
-					//we got product
-					Product product=opt2.get();
-					int s;
-					try {
-						int x=productRepo.getSizes(size, pid);
-						s=x;
-					} catch (Exception e) {
-						throw new ProductException("Inviled size.");
-					}
-					if(s<quantity) {
-						throw new ProductException("Inviled quantity avalible quantity : "+s);
-					}
-					int totalPrice=quantity*product.getPrice();
-					Float a=totalPrice-user.getAmount();
-					if(totalPrice>user.getAmount()) {
-						throw new AmountException("Insufficient amount (Add anount : "+a+")");
-					}
-					user.setAmount(user.getAmount()-totalPrice);
-					//we get order of user
-					Order order=user.getOrder();
-					//find list of product of that user
-					ProductDetails productDet=new ProductDetails();
-					productDet.setSize(size);
-					productDet.setQuantity(quantity);
-					productDet.setPid(pid);
-					productDet.setPrice(totalPrice);
-					productRepo.updateTotal(s-quantity,pid, size);
-					productDet.setOrder(order);
-					List<ProductDetails> plist=new ArrayList<>();
-					plist.add(productDet);
-					order.setTotalPrice(order.getTotalPrice()+productDet.getPrice());
-					order.setProductDetailsList(plist);	
-					productDetailsRepo.save(productDet);
-					userRepo.save(user);
-						
-				}else
-					throw new ProductException("Invilid product id : "+pid);
+	public String addOrder(Integer userId, Integer[] pidList,String[] sizeList,Integer[] quantityList) {
+		
+	    Users user = userRepo.findById(userId).
+	    		orElseThrow(()-> new UserException("Invalid user id: " + userId));
+	    List<ProductDetails> plist = new ArrayList<>();
+	    Order order = user.getOrder();
+        for (int i = 0; i < pidList.length; i++) {
+            Integer pid = pidList[i];
+            String size = sizeList[i];
+            Integer quantity = quantityList[i];
+
+            Product product = productRepo.findById(pid)
+                    .orElseThrow(() -> new ProductException("Invalid product id: " + pid));
+            int availableQuantity=0;
+            try {
+				int as=productRepo.getSizes(size, pid);
+				availableQuantity+=as;
+				
+			} catch (Exception e) {
+				throw new ProductException("Inviled size.");
+			}
+            int totalPrice = quantity * product.getPrice();
+            Float remainingAmount = user.getAmount() - totalPrice;
+            if (remainingAmount < 0) {
+            	throw new AmountException("Insufficient amount, add amount: " + Math.abs(remainingAmount));
+            }
+	  
+            user.setAmount(remainingAmount);
+            if (availableQuantity < quantity) {
+	                throw new ProductException("Invalid quantity, available quantity: " + availableQuantity);
+	        }
+
+            ProductDetails productDet = new ProductDetails();
+            productDet.setSize(size);
+            productDet.setQuantity(quantity);
+            productDet.setPid(pid);
+            productDet.setPrice(product.getPrice());
+            productDet.setOrder(order);
+
+            productRepo.updateTotal(availableQuantity - quantity, pid, size);
+            plist.add(productDet);
+
+            order.setTotalPrice(order.getTotalPrice() + productDet.getPrice());
+            order.setProductDetailsList(plist);
+        }
+
+        // Save user and order outside the loop
+        
+        productDetailsRepo.saveAll(plist);
+        userRepo.save(user);
+        return "ordered.";	
+		
+	}
+
+//	@Override
+//	public String deleteOrder(Integer userId, Integer[] pid) {
+////		Users user = userRepo.findById(userId).
+////	    		orElseThrow(()-> new UserException("Invalid user id: " + userId));
+////		Product product = productRepo.findById(pid)
+////                .orElseThrow(() -> new ProductException("Invalid product id: " + pid));
+//		return null;
+//	}
+
+	@Override
+	public List<ProductDetails> allorder(Integer userId) {
+		Optional<Users> opt=userRepo.findById(userId);
+		if(opt.isPresent()) {
+			Users user=opt.get();
+			List<ProductDetails> list=user.getOrder().getProductDetailsList().stream().filter(p->p.getCart()==null).toList();
+			if(list.size()>0) {
+				return list;
 			}else
-				throw new UserException("Invilid user id : "+userId);
-		}
-		return "ordered.";
-	}
-
-	@Override
-	public String deleteOrder(Integer userId, Integer[] pid) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<Product> allorder() {
-		// TODO Auto-generated method stub
-		return null;
+				throw new ProductException("Empty list.");
+		}else
+			throw new UserException("Invilid user id : "+userId);
+	
 	}
 
 }
+

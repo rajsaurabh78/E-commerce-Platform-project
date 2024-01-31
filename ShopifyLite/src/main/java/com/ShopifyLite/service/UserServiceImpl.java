@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import com.ShopifyLite.exception.AmountException;
 import com.ShopifyLite.exception.UserException;
+import com.ShopifyLite.model.Address;
 import com.ShopifyLite.model.Authority;
 import com.ShopifyLite.model.Cart;
 import com.ShopifyLite.model.Order;
@@ -54,6 +55,10 @@ public class UserServiceImpl implements UserService{
 		orderRepo.save(order);
 		user.setOrder(order);
 		user.setCart(cart);
+		List<Address> addressList=user.getAddressList();
+		for(Address a:addressList) {
+			a.setUser(user);
+		}
 		Users u=userRepo.save(user);
 		return "User saves with userId : "+u.getUserId();
 	}

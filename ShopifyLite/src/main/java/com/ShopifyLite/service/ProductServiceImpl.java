@@ -8,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ShopifyLite.exception.ProductException;
 import com.ShopifyLite.exception.SizeException;
@@ -36,7 +39,7 @@ public class ProductServiceImpl implements ProductService{
 
 	@Override
 	@Transactional
-	public String addProduct(Product product) {
+	public String addProduct(Product product,MultipartFile file) {
 		String str=product.getSizeQuan();
         List<Quantity> qList=new ArrayList<>();
         String[] pairs = str.split(",");
@@ -53,12 +56,16 @@ public class ProductServiceImpl implements ProductService{
     		}else
     			throw new SizeException("Inviled size.");
         }
-        
         product.setQuantityList(qList);
         product.setSizeQuan(null);
-        quantityRepo.saveAll(qList);
-		productRepo.save(product);
-		return "Product added.";
+        try {
+            product.setImage(file.getBytes());
+            quantityRepo.saveAll(qList);
+    		productRepo.save(product);
+    		return "Product added.";
+        } catch (Exception e) {
+            throw new ProductException("Failed to upload image.");
+        }
 
 	}
 
@@ -179,6 +186,18 @@ public class ProductServiceImpl implements ProductService{
 		}else
 			throw new UserException("Inviled direction .");	
 		
+	}
+
+	@Override
+	public Product getProductById(Integer pId) {
+		
+		Optional<Product> opt=productRepo.findById(pId);
+		if(opt.isEmpty()) {
+			throw new ProductException("Inviled product Id");
+		}else {
+			Product product=opt.get();
+			return product;
+		}
 	}
 
 }

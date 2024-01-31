@@ -4,11 +4,11 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.ShopifyLite.model.Product;
+import com.ShopifyLite.model.ProductDetails;
 
 @Service
 public interface OrderService{
-	public String addOrder(Integer userId, Integer[] pidList,String size,Integer quantity);
-	public String deleteOrder(Integer userId,Integer[] pid);
-	public List<Product> allorder();
+	public String addOrder(Integer userId, Integer[] pidList,String[] size,Integer[] quantity);
+//	public String deleteOrder(Integer userId,Integer[] pid);
+	public List<ProductDetails> allorder(Integer userId);
 }

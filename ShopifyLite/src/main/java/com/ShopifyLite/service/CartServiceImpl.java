@@ -139,9 +139,9 @@ public class CartServiceImpl implements CartService{
 		Optional<Users> opt=userRepo.findById(userId);
 		if(opt.isPresent()) {
 			Users user=opt.get();
-			List<ProductDetails> pd=user.getCart().getProductDetailsList();
-			if(pd.size()>0) {
-				return pd;
+			List<ProductDetails> list=user.getCart().getProductDetailsList().stream().filter(p->p.getCart()!=null).toList();
+			if(list.size()>0) {
+				return list;
 			}else
 				throw new ProductException("Empty list.");
 		}else

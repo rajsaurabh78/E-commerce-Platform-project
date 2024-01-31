@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.ShopifyLite.model.Product;
 import com.ShopifyLite.service.ProductService;
@@ -26,12 +28,31 @@ public class ProductController {
 	private ProductService productService;
 	
 	@PostMapping("/product")
-	public ResponseEntity<String> addProductController(@Valid @RequestBody Product product){
-		String res=productService.addProduct(product);
+	public ResponseEntity<String> addProductController(@Valid @RequestPart Product product,
+	        @RequestPart("image") MultipartFile image){
+		String res=productService.addProduct(product, image);
 		return new ResponseEntity<>(res,HttpStatus.CREATED);
 	}
 
-	@DeleteMapping("/product/{pId}")
+//	 @PostMapping("/upload")
+//	    public ResponseEntity<String> handleFileUpload(@RequestParam("file") MultipartFile file) {
+//	        try {
+//	            YourEntity entity = new YourEntity();
+//	            entity.setImage(file.getBytes());
+//	            yourEntityRepository.save(entity);
+//	            return ResponseEntity.ok("Image uploaded successfully!");
+//	        } catch (IOException e) {
+//	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image.");
+//	        }
+//	    }
+
+	
+	
+	
+	
+	
+	
+	@DeleteMapping("/delproduct/{pId}")
 	public ResponseEntity<String> deleteProductController(@Valid @PathVariable("pId")Integer pId){
 		String res=productService.deleteProduct(pId);
 		return new ResponseEntity<>(res,HttpStatus.OK);
@@ -43,13 +64,19 @@ public class ProductController {
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@GetMapping("/product/{name}")
+	@GetMapping("/product/{pId}")
+	public ResponseEntity<Product> getProductByIdController(@Valid @PathVariable("pId")Integer pId){
+		Product res=productService.getProductById(pId);
+		return new ResponseEntity<>(res,HttpStatus.OK);
+	}
+	
+	@GetMapping("/products/{name}")
 	public ResponseEntity<List<Product>> getProductByNameController(@Valid @PathVariable ("name") String name){
 		List<Product> res=productService.getProductByName(name);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@GetMapping("/products/{type}")
+	@GetMapping("/productss/{type}")
 	public ResponseEntity<List<Product>> getProductByTypeController(@Valid @PathVariable ("type") String type){
 		List<Product> res=productService.getProductByType(type);
 		return new ResponseEntity<>(res,HttpStatus.OK);
