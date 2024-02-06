@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Product</title>
+</head>
+<body>
+    <h1>Add Product</h1>
+    <form id="productForm" enctype="multipart/form-data">
+        <label for="name">Product Name:</label>
+        <input type="text" id="name" name="name" required><br>
+
+        <label for="type">Product type:</label>
+        <input type="text" id="type" name="type" required><br>
+
+        <label for="price">Product Price:</label>
+        <input type="number" id="price" name="price" required><br>
+
+        <label for="sizeQuan">Product sizeQuan:</label>
+        <input type="text" id="sizeQuan" name="sizeQuan" required><br>
+
+        <label for="manufactureDate">Product manufactureDate:</label>
+        <input type="date" id="manufactureDate" name="manufactureDate" required><br>
+
+        <label for="image">Product Image:</label>
+        <input type="file" id="image" name="image" accept="image/*" required><br>
+
+        <button type="button" onclick="addProduct()">Add Product</button>
+    </form>
+
+    <script>
+         function addProduct() {
+            const form = document.getElementById('productForm');
+            const formData = new FormData(form);
+
+            const productData = {
+                name: formData.get('name'),
+                type: formData.get('type'),
+                price: formData.get('price'),
+                sizeQuan: formData.get('sizeQuan'),
+                manufactureDate: formData.get('manufactureDate'),
+            };
+
+            const imageFile = formData.get('image');
+
+            // Create a new FormData object for the request
+            const requestFormData = new FormData();
+            
+            // Append product data as a blob
+            const productBlob = new Blob([JSON.stringify(productData)], { type: 'application/json' });
+            requestFormData.append('product', productBlob);
+
+            // Append the image file
+            requestFormData.append('image', imageFile);
+
+            console.log(formData);
+
+            fetch('http://localhost:8080/product', {
+                method: 'POST',
+                body: requestFormData,
+            })
+            .then(response => response.text())
+            .then(data => {
+                console.log(data);
+                alert(data);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>

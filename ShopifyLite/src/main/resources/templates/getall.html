@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <title>Page with Auto-Invoked Function</title>
+    <style>
+/* #items div{
+    margin: auto;
+}
+#items{
+    text-align: center;
+} */
+        #main{
+            border: 1px solid brown;
+            border-radius: 10px;
+            margin: auto;
+        }
+        img{
+            width: 100px;
+        }
+        #list{
+            display: grid;
+            grid-template-columns:repeat(5,1fr);
+            gap: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>All Product</h1>
+    <input type="number" name="page" id="page" placeholder="Enter page no">
+    <input type="number" name="NoOfItem" id="NoOfItem" placeholder="Enter NoOfItem">
+    <select name="direction" id="direction">
+        <option value="asc">Ascending</option>
+        <option value="dsc">Descending</option>
+    </select>
+    <select name="type" id="type">
+        <option value="name">Name</option>
+        <option value="price">Price</option>
+        <option value="manufactureDate">ManufactureDate</option>
+        <option value="type">Type</option>
+    </select>
+    <button onclick="AllLibrary()">Submit</button>
+    <div id="list"></div>
+    
+</body>
+<script>
+    let AllLibrary=()=>{
+        // let token=JSON.parse(localStorage.getItem("jwtToken"))
+        let direction=document.getElementById("direction").value
+        let type=document.getElementById("type").value
+        let page=document.getElementById("page").value
+        let NoOfItem=document.getElementById("NoOfItem").value
+        let url=`http://localhost:8080/allproduct/${page}/${NoOfItem}?type=${type}&direction=${direction}`
+        fetch(url, {
+            method: "GET"// Change the HTTP method as needed
+            // headers: {
+            //     "Authorization": `Bearer ${token}`
+            // //  "Content-Type": "application/json",
+            // }
+        }).then(response => {
+            if(response.status == 200){
+            response.json().then(data => {
+                console.log(data);
+                document.querySelector("#list").innerHTML=[]
+                data.forEach(({name,type,price,manufactureDate,quantityList,image},i)=> {
+                    let div=document.createElement("div")
+                    div.id="main"
+                    let n=document.createElement("h2")
+                    n="Name : "+name
+                    let t=document.createElement("h4")
+                    t="Type : "+type
+                    let p=document.createElement("h4")
+                    p="Ptice : "+price+" ₹"
+                    let m=document.createElement("h4")
+                    m="ManufactureDate : "+manufactureDate
+                    let list=quantityList
+                    let sizeList=[]
+                    list.forEach(({total,size:{type}})=> {
+                        sizeList.push(type)
+                        sizeList.push(total)
+
+                    });
+                    let img=document.createElement("img")
+                    img.src=`${base64ToDataURL(image)}`
+                    let sizeQuan=document.createElement("h4")
+                    sizeQuan="SizeQuantity : "+sizeList
+                    div.append(img,n,t,p,m,sizeQuan)
+                    document.querySelector("#list").append(div)
+                })
+            });   
+        }else if(response.status == 401){
+            alert("Session expired .")
+            }else{
+                response.json().then(data => alert(data.message));
+                window.location.reload()
+            }
+        })
+    }
+    function base64ToDataURL(base64String) {
+    return `data:image/jpeg;base64,${base64String}`;
+    }
+</script>
+
+</html>
