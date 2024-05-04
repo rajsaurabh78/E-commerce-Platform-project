@@ -28,7 +28,7 @@
     let AllLibrary=()=>{
         // let token=JSON.parse(localStorage.getItem("jwtToken"))
         let id=document.querySelector("input").value
-        let url=`http://localhost:8080/product/${id}`
+        let url=`http://localhost:8080/admin/product/${id}`
         fetch(url, {
             method: "GET"// Change the HTTP method as needed
             // headers: {

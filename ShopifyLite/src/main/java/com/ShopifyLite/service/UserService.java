@@ -6,7 +6,7 @@ import com.ShopifyLite.model.Users;
 
 public interface UserService{
 
-	public String addUser(Users user);
+	public Users addUser(Users user);
 	public String updateUser(Users user);
 	public String deleteUser(Integer userId);
 	public String addAmount(Integer userId,Float amount);

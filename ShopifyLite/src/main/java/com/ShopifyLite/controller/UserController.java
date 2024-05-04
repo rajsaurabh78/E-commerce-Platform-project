@@ -26,63 +26,63 @@ public class UserController {
 	private UserService userService;
 	
 	@PostMapping("/register")
-	public ResponseEntity<String> addUserController(@Valid @RequestBody Users user){
-		String res=userService.addUser(user);
+	public ResponseEntity<Users> addUserController(@Valid @RequestBody Users user){
+		Users res=userService.addUser(user);
 		return new ResponseEntity<>(res,HttpStatus.CREATED);
 		
 	}
 	
-	@PutMapping("/register")
+	@PutMapping("/user/register")
 	public ResponseEntity<?> updateUserController(@Valid @RequestBody Users user){
 		String res=userService.updateUser(user);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/register/{id}")
+	@DeleteMapping("/user/register/{id}")
 	public ResponseEntity<?> deleteUserController(@Valid @PathVariable ("id")Integer id){
 		String res=userService.deleteUser(id);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@PutMapping("/register/{userId}/{amount}")
+	@PutMapping("/user/register/{userId}/{amount}")
 	public ResponseEntity<?> addAmountController(@Valid @PathVariable ("userId")Integer userId,
 			@Valid @PathVariable ("amount")Float amount){
 		String res=userService.addAmount(userId, amount);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 
-	@PutMapping("/registers/{userId}/{amount}")
+	@PutMapping("/user/registers/{userId}/{amount}")
 	public ResponseEntity<?> withdrawAmountController(@Valid @PathVariable ("userId")Integer userId,
 			@Valid @PathVariable ("amount")Integer amount){
 		String res=userService.withdrawAmount(userId, amount);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@GetMapping("/register/{userId}")
+	@GetMapping("/user/register/{userId}")
 	public ResponseEntity<?> getUserByIdController(@Valid @PathVariable ("userId")Integer userId){
 		Users res=userService.getUserById(userId);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@GetMapping("/registers/{name}")
+	@GetMapping("/user/registers/{name}")
 	public ResponseEntity<List<Users>> getUserByNameController(@Valid @PathVariable ("name")String name){
 		List<Users> res=userService.getUserByName(name);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@GetMapping("/registerss/{phone}")
+	@GetMapping("/user/registerss/{phone}")
 	public ResponseEntity<?> getUserByMobileController(@Valid @PathVariable ("phone")String phone){
 		Users res=userService.getUserByMobile(phone);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@GetMapping("/registersss/{email}")
+	@GetMapping("/user/registersss/{email}")
 	public ResponseEntity<?> getUserByEmailController(@Valid @PathVariable ("email")String email){
 		Users res=userService.getUserByEmail(email);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@GetMapping("/register/{page}/{NoOfItem}")
+	@GetMapping("/user/register/{page}/{NoOfItem}")
 	public ResponseEntity<List<Users>> getAllUserController(@Valid @PathVariable ("page")Integer page,
 			@Valid @PathVariable ("NoOfItem")Integer NoOfItem,
 			@Valid @RequestParam String field,@Valid @RequestParam String direction){

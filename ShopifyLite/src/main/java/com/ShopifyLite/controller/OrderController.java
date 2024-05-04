@@ -32,7 +32,7 @@ public class OrderController {
 		return new ResponseEntity<>(res,HttpStatus.CREATED);
 	}
 	
-	@GetMapping("/allproduct/{userId}")
+	@GetMapping("/order/allproduct/{userId}")
 	public ResponseEntity<List<ProductDetails>> getAllProductController(@Valid @PathVariable("userId")Integer userId){
 		List<ProductDetails> res=orderService.allorder(userId);
 		return new ResponseEntity<>(res,HttpStatus.OK);

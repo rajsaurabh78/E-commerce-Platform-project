@@ -45,14 +45,31 @@ public SecurityFilterChain springSecurityConfiguration(HttpSecurity http) throws
 			.requestMatchers(HttpMethod.DELETE, "/**")
 			.permitAll()
 			.requestMatchers(HttpMethod.GET, "/**")
-			.permitAll();
+			.permitAll()
+//			.requestMatchers(HttpMethod.DELETE,"/user/**").hasRole("ADMIN")
+			
 //			.requestMatchers("/swagger-ui*/**","/v3/api-docs/**").permitAll()
-//			.requestMatchers(HttpMethod.POST,"/admin/**").hasRole("ADMIN")
-//			.requestMatchers(HttpMethod.PUT,"/admin/**").hasRole("ADMIN")
-//			.requestMatchers(HttpMethod.GET,"/admin/**").hasRole("ADMIN")
-//			.requestMatchers(HttpMethod.DELETE,"/admin/**").hasRole("ADMIN")
+//			.requestMatchers(HttpMethod.POST,"/register").permitAll()
+//			.requestMatchers(HttpMethod.PUT,"/user/**").hasAnyRole("ADMIN","User")
+//			.requestMatchers(HttpMethod.GET,"/user/**").hasAnyRole("ADMIN","USER")
+//			.requestMatchers(HttpMethod.DELETE,"/user/**").hasAnyRole("ADMIN","USER")
+//			.requestMatchers(HttpMethod.POST,"/size").hasRole("ADMIN")
+//			.requestMatchers(HttpMethod.PUT,"/size").hasRole("ADMIN")
+//			.requestMatchers(HttpMethod.GET,"/size").hasRole("ADMIN")
+//			.requestMatchers(HttpMethod.DELETE,"/size/**").hasRole("ADMIN")
+//			.requestMatchers(HttpMethod.POST,"/product").hasRole("ADMIN")
+//			.requestMatchers(HttpMethod.PUT,"/product").hasRole("ADMIN")
+//			.requestMatchers(HttpMethod.GET,"/admin/**").permitAll()
+//			.requestMatchers(HttpMethod.DELETE,"/product/**").hasRole("ADMIN")
+//			.requestMatchers(HttpMethod.POST,"/order/**").hasAnyRole("ADMIN","USER")
+//			.requestMatchers(HttpMethod.GET,"/order/**").hasAnyRole("ADMIN","USER")
+//			.requestMatchers(HttpMethod.GET,"/cart/**").hasAnyRole("ADMIN","USER")
+//			.requestMatchers(HttpMethod.DELETE,"/cart/**").hasAnyRole("ADMIN","USER")
+//			.requestMatchers(HttpMethod.POST,"/cart/**").hasAnyRole("ADMIN","USER")
+			
+			
 //			.requestMatchers(HttpMethod.GET,"/students/**").hasAnyRole("ADMIN","USER","STUDENT")
-//			.anyRequest().authenticated();
+			.anyRequest().authenticated();
 		})
 		.csrf(csrf -> csrf.disable())
 		.addFilterAfter(new JwtTokenGeneratorFilter(), BasicAuthenticationFilter.class)

@@ -51,9 +51,9 @@
         // let token=JSON.parse(localStorage.getItem("jwtToken"))
         let direction=document.getElementById("direction").value
         let type=document.getElementById("type").value
-        let page=document.getElementById("page").value
-        let NoOfItem=document.getElementById("NoOfItem").value
-        let url=`http://localhost:8080/allproduct/${page}/${NoOfItem}?type=${type}&direction=${direction}`
+        let page=document.getElementById("page").value || 1
+        let NoOfItem=document.getElementById("NoOfItem").value || 10
+        let url=`http://localhost:8080/admin/allproduct/${page}/${NoOfItem}?type=${type}&direction=${direction}`
         fetch(url, {
             method: "GET"// Change the HTTP method as needed
             // headers: {

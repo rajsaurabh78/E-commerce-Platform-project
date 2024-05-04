@@ -1,5 +1,6 @@
 package com.ShopifyLite.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,14 +40,24 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	@Transactional
-	public String addUser(Users user) {
+	public Users addUser(Users user) {
 		//
 		user.setPassword(encoder.encode(user.getPassword()));
 		List<Authority> auths=user.getAuthorities();
-		for(Authority i:auths) {
+		if(auths.size()==0) {
+			List<Authority> aut=new ArrayList<>();
+			Authority at=new Authority();
+			at.setName("ROLE_USER");
+			at.setUser(user);
+			aut.add(at);
+			user.setAuthorities(aut);
+		}else {
+			for(Authority i:auths) {
 			i.setName("ROLE_"+i.getName().toUpperCase());
 			i.setUser(user);
+			}
 		}
+		
 		Cart cart=new Cart();
 		Order order=new Order();
 		cart.setAmount(0);
@@ -60,7 +71,8 @@ public class UserServiceImpl implements UserService{
 			a.setUser(user);
 		}
 		Users u=userRepo.save(user);
-		return "User saves with userId : "+u.getUserId();
+//		return "User saves with userId : "+u.getUserId();
+		return u;
 	}
 
 	@Override

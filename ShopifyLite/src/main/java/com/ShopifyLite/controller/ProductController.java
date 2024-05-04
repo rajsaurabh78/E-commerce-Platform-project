@@ -52,7 +52,7 @@ public class ProductController {
 	
 	
 	
-	@DeleteMapping("/delproduct/{pId}")
+	@DeleteMapping("/product/{pId}")
 	public ResponseEntity<String> deleteProductController(@Valid @PathVariable("pId")Integer pId){
 		String res=productService.deleteProduct(pId);
 		return new ResponseEntity<>(res,HttpStatus.OK);
@@ -64,31 +64,31 @@ public class ProductController {
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@GetMapping("/product/{pId}")
+	@GetMapping("/admin/product/{pId}")
 	public ResponseEntity<Product> getProductByIdController(@Valid @PathVariable("pId")Integer pId){
 		Product res=productService.getProductById(pId);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@GetMapping("/products/{name}")
+	@GetMapping("/admin/products/{name}")
 	public ResponseEntity<List<Product>> getProductByNameController(@Valid @PathVariable ("name") String name){
 		List<Product> res=productService.getProductByName(name);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@GetMapping("/productss/{type}")
+	@GetMapping("/admin/productss/{type}")
 	public ResponseEntity<List<Product>> getProductByTypeController(@Valid @PathVariable ("type") String type){
 		List<Product> res=productService.getProductByType(type);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@GetMapping("/productsp/{price}")
+	@GetMapping("/admin/productsp/{price}")
 	public ResponseEntity<List<Product>> getProductByPriceController(@Valid @PathVariable ("price") Integer price){
 		List<Product> res=productService.getProductByPrice(price);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@GetMapping("/allproduct/{page}/{NoOfItem}")
+	@GetMapping("/admin/allproduct/{page}/{NoOfItem}")
 	public ResponseEntity<List<Product>> getAllProductController(@Valid @PathVariable ("page")Integer page,
 			@Valid @PathVariable ("NoOfItem")Integer NoOfItem,
 			@Valid @RequestParam String type,@Valid @RequestParam String direction){

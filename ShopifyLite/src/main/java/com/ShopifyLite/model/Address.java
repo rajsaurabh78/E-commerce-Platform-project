@@ -24,7 +24,7 @@ public class Address {
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator ="address_seq")
 	@SequenceGenerator(name="address_seq", sequenceName="address_seq",allocationSize=1, initialValue=1)
 	private Integer aid;
-	private String flatNo;
+	private Integer flatNo;
 	private String addressLine1;
 	private String addressLine2;
 	private String nearBy;
