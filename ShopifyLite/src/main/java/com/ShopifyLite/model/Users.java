@@ -34,8 +34,8 @@ public class Users {
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator ="user_seq")
 	@SequenceGenerator(name="user_seq", sequenceName="user_seq",allocationSize=1, initialValue=1)
-
 	private Integer userId;
+	
 	private String name;
 	@Column(unique = true)
 	private String email;
@@ -43,7 +43,7 @@ public class Users {
 	private String password;
 	private String phone;
 	private LocalDate dob;
-	private Float amount;
+	private Double amount;
 	
 	@ManyToOne
 	@JsonIgnore
@@ -52,7 +52,7 @@ public class Users {
 	@ManyToOne
 	@JsonIgnore
 	private Order order;
-	
+	@JsonProperty(access =JsonProperty.Access.WRITE_ONLY)
 	@OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<Authority> authorities=new ArrayList<>();
 	

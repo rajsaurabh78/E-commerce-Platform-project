@@ -66,6 +66,7 @@ public class UserServiceImpl implements UserService{
 		orderRepo.save(order);
 		user.setOrder(order);
 		user.setCart(cart);
+		user.setAmount(0.0);
 		List<Address> addressList=user.getAddressList();
 		for(Address a:addressList) {
 			a.setUser(user);

@@ -1,6 +1,7 @@
 package com.ShopifyLite.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,6 +24,7 @@ public class Address {
 	@Id
 	@GeneratedValue(strategy=GenerationType.SEQUENCE, generator ="address_seq")
 	@SequenceGenerator(name="address_seq", sequenceName="address_seq",allocationSize=1, initialValue=1)
+	@JsonProperty(access =JsonProperty.Access.WRITE_ONLY)
 	private Integer aid;
 	private Integer flatNo;
 	private String addressLine1;
