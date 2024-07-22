@@ -4,7 +4,8 @@ Our E-commerce Platform Project in Java is a simple yet robust online marketplac
 
 ## ER Diagram
 
-![cart digram](https://github.com/rajsaurabh78/E-commerce-Platform-project/assets/108000350/70b9f2bf-6143-4c05-a797-8dcace706311)
+![jj](https://github.com/user-attachments/assets/0a057e1b-0304-4a4e-81cb-37c2de869b88)
+
 
 ## Tech Stack
 
