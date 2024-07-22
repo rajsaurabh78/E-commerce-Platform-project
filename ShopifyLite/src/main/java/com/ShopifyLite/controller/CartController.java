@@ -17,6 +17,9 @@ import com.ShopifyLite.model.ProductDetails;
 import com.ShopifyLite.service.CartService;
 
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 @RestController
 @RequestMapping("/user")
@@ -44,4 +47,10 @@ public class CartController {
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
+	@PutMapping("update/{pId}")
+	public ResponseEntity<ProductDetails> UpdatingProductQuantitiesController(@Valid @PathVariable("pId") Integer pId,
+			@Valid @RequestParam("quantity") Integer quantity) {
+		ProductDetails pd=cartService.UpdatingProductQuantities(pId, quantity);
+		return new ResponseEntity<>(pd, HttpStatus.OK);
+	}
 }

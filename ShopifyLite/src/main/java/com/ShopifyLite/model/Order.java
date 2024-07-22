@@ -31,10 +31,10 @@ public class Order {
 	private Integer oid;
 	private Integer totalPrice;
 	
-	@OneToMany(mappedBy = "order",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "order",cascade = CascadeType.ALL,fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<Users> userList =new ArrayList<>();
 	
-	@OneToMany(mappedBy = "order")
+	@OneToMany(mappedBy = "order",cascade = CascadeType.ALL,fetch = FetchType.EAGER)
 	private List<ProductDetails> productDetailsList =new ArrayList<>();
 	
 }

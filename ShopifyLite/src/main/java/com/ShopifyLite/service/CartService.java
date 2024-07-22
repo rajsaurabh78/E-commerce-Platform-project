@@ -10,5 +10,6 @@ public interface CartService{
 	public String addItem(Integer pId,String size)throws LoginException;
 	public String deleteItem(Integer pId,String size)throws LoginException;
 	public List<ProductDetails> getAllCartItem()throws LoginException;
+	public ProductDetails UpdatingProductQuantities(Integer pId,Integer quantity)throws LoginException;
 	
 }

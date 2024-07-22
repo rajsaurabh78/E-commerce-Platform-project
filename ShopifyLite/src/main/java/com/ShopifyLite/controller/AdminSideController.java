@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,29 +17,30 @@ import com.ShopifyLite.service.UserService;
 
 import jakarta.validation.Valid;
 @RestController
+@RequestMapping("/admin")
 public class AdminSideController {
 	@Autowired
 	private UserService userService;
 	
-	@GetMapping("/user/registers/{name}")
+	@GetMapping("/user/{name}")
 	public ResponseEntity<List<Users>> getUserByNameController(@Valid @PathVariable ("name")String name){
 		List<Users> res=userService.getUserByName(name);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@GetMapping("/user/registerss/{phone}")
+	@GetMapping("/phone/{phone}")
 	public ResponseEntity<?> getUserByMobileController(@Valid @PathVariable ("phone")String phone){
 		Users res=userService.getUserByMobile(phone);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@GetMapping("/user/registersss/{email}")
+	@GetMapping("/user/email/{email}")
 	public ResponseEntity<?> getUserByEmailController(@Valid @PathVariable ("email")String email){
 		Users res=userService.getUserByEmail(email);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@GetMapping("/user/register/{page}/{NoOfItem}")
+	@GetMapping("/user/{page}/{NoOfItem}")
 	public ResponseEntity<List<Users>> getAllUserController(@Valid @PathVariable ("page")Integer page,
 			@Valid @PathVariable ("NoOfItem")Integer NoOfItem,
 			@Valid @RequestParam String field,@Valid @RequestParam String direction){

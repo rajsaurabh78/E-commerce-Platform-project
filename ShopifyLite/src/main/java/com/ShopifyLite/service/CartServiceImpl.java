@@ -148,4 +148,20 @@ public class CartServiceImpl implements CartService{
 		
 	}
 
+	@Override
+	public ProductDetails UpdatingProductQuantities(Integer pId,Integer quantity) throws LoginException {
+
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Users user = userRepo.findByEmail(authentication.getName())
+				.orElseThrow(() -> new LoginException("Please Login First"));
+		Optional<ProductDetails> opt= user.getCart().getProductDetailsList()
+				.stream().filter(s->s.getPid()==pId).findFirst();
+		if(opt.isEmpty()) {
+			throw new ProductException("Inviled product id.");
+		}
+		ProductDetails proDetails=opt.get();
+		proDetails.setQuantity(quantity);
+		return productDetailsRepo.save(proDetails);
+	}
+
 }

@@ -111,14 +111,16 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
+	@Transactional
 	public String deleteUser(Integer userId) {
-		Optional<Users> opt=userRepo.findById(userId);
-		if(opt.isPresent()) {
-			//Here we get my user and deleted
-			userRepo.delete(opt.get());
-			return "deleted successfully";
-		}else
-			throw new UserException("Inviled userId.");
+		Users user=userRepo.findById(userId)
+				.orElseThrow(()-> new UserException("Inviled userId."));
+		//Here we get my user and deleted
+		orderRepo.delete(user.getOrder());
+		cartRepo.delete(user.getCart());
+		
+		return "deleted successfully";
+
 	}
 
 	@Override
@@ -158,7 +160,7 @@ public class UserServiceImpl implements UserService{
 	public List<Users> getUserByName(String name) {
 		// Here we use findBy... Syntex
 		
-		List<Users> list= userRepo.findByName(name);
+		List<Users> list= userRepo.findByNameContaining(name);
 		if(list.isEmpty()) {
 			throw new UserException("No user found.");
 		}else
