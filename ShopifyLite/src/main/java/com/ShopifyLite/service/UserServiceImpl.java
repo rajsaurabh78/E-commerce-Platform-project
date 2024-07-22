@@ -13,6 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ShopifyLite.DTO.Admin;
 import com.ShopifyLite.DTO.UpdateUserDTO;
 import com.ShopifyLite.exception.AmountException;
 import com.ShopifyLite.exception.LoginException;
@@ -202,6 +203,37 @@ public class UserServiceImpl implements UserService{
 		}else
 			throw new UserException("Inviled direction .");	
 		
+	}
+
+	@Override
+	public Users addAdmin(Admin admin) {
+		Users user= new Users();
+		user.setPassword(encoder.encode(admin.getPassword()));
+		
+		List<Authority> authorities=new ArrayList<>();
+		Authority authority1=new Authority();
+		authority1.setName("ROLE_USER");
+		authority1.setUser(user);
+		Authority authority2=new Authority();
+		authority2.setName("ROLE_ADMIN");
+		authority2.setUser(user);
+		authorities.add(authority1);
+		authorities.add(authority2);
+		
+		user.setAuthorities(authorities);
+		
+		List<Address> addressList=admin.getAddressList();
+		user.setAddressList(addressList);
+		for(Address a:addressList) {
+			a.setUser(user);
+		}
+		
+		user.setDob(admin.getDob());
+		user.setEmail(admin.getEmail());
+		user.setName(admin.getName());
+		user.setPhone(admin.getPhone());
+		Users savedAdmin=userRepo.save(user);
+		return savedAdmin;
 	}
 
 }

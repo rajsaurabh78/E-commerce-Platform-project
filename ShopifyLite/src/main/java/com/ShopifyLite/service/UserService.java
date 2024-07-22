@@ -4,12 +4,14 @@ import java.util.List;
 
 import javax.security.auth.login.LoginException;
 
+import com.ShopifyLite.DTO.Admin;
 import com.ShopifyLite.DTO.UpdateUserDTO;
 import com.ShopifyLite.model.Users;
 
 public interface UserService{
 
 	public Users addUser(Users user);
+	public Users addAdmin(Admin admin);
 	public String updateUser(UpdateUserDTO updateUserDTO) throws LoginException;
 	public String deleteUser(Integer userId);
 	public String addAmount(Integer amount)throws LoginException ;
