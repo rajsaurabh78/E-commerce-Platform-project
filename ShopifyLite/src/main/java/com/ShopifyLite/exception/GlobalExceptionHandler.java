@@ -63,6 +63,12 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(err,HttpStatus.BAD_REQUEST);
 	}
 	
+	@ExceptionHandler(LoginException.class)
+	public ResponseEntity<MyErrorDetails> loginException(LoginException e,WebRequest r){
+		MyErrorDetails err=new MyErrorDetails(LocalDateTime.now(), e.getMessage(), r.getDescription(false));
+		return new ResponseEntity<>(err,HttpStatus.BAD_REQUEST);
+	}
+	
 	@ExceptionHandler(CartException.class)
 	public ResponseEntity<MyErrorDetails> cartException(CartException e,WebRequest r){
 		MyErrorDetails err=new MyErrorDetails(LocalDateTime.now(), e.getMessage(), r.getDescription(false));

@@ -46,6 +46,8 @@ public SecurityFilterChain springSecurityConfiguration(HttpSecurity http) throws
 			.permitAll()
 			.requestMatchers(HttpMethod.GET, "/**")
 			.permitAll()
+			.requestMatchers(HttpMethod.PATCH, "/**")
+			.permitAll()
 //			.requestMatchers(HttpMethod.DELETE,"/user/**").hasRole("ADMIN")
 			
 //			.requestMatchers("/swagger-ui*/**","/v3/api-docs/**").permitAll()

@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ShopifyLite.DTO.UpdateProductDTO;
 import com.ShopifyLite.exception.ProductException;
 import com.ShopifyLite.exception.SizeException;
 import com.ShopifyLite.exception.UserException;
@@ -71,32 +72,32 @@ public class ProductServiceImpl implements ProductService{
 
 	@Override
 	@Transactional
-	public String updateProduct(Product product) {
+	public String updateProduct(UpdateProductDTO updateProductDTO) {
 
-		Optional<Product> opt=productRepo.findById(product.getPid());
+		Optional<Product> opt=productRepo.findById(updateProductDTO.getPid());
 		if(opt.isEmpty()) {
 			throw new ProductException("Inviled product Id");
 		}else {
 			Product p=opt.get();
-			if(product.getManufactureDate()!=null) {
-				p.setManufactureDate(product.getManufactureDate());
+			if(updateProductDTO.getManufactureDate()!=null) {
+				p.setManufactureDate(updateProductDTO.getManufactureDate());
 			}
-			if(product.getName()!=null) {
-				p.setName(product.getName());
+			if(updateProductDTO.getName()!=null) {
+				p.setName(updateProductDTO.getName());
 			}
-			if(product.getPrice()!=null) {
-				p.setPrice(product.getPrice());
+			if(updateProductDTO.getPrice()!=null) {
+				p.setPrice(updateProductDTO.getPrice());
 			}
-			if(product.getType()!=null) {
-				p.setType(product.getType());
+			if(updateProductDTO.getType()!=null) {
+				p.setType(updateProductDTO.getType());
 			}
 			
-			if(product.getSizeQuan()!=null) {
+			if(updateProductDTO.getSizeQuan()!=null) {
 				List<Quantity> qList=new ArrayList<>();
-				String str=product.getSizeQuan();
+				String str=updateProductDTO.getSizeQuan();
 		        String[] pairs = str.split(",");
 		        for (int i=0;i<pairs.length-1;i+=2) {
-		        	int x=productRepo.updateTotal(Integer.parseInt(pairs[i + 1]), product.getPid(),pairs[i].toLowerCase());
+		        	int x=productRepo.updateTotal(Integer.parseInt(pairs[i + 1]), updateProductDTO.getPid(),pairs[i].toLowerCase());
 		    		if(x==0) {
 			        	Optional<Size> opt2=sizeRepo.findByType(pairs[i].toLowerCase());
 			    		if(opt2.isPresent()) {
@@ -104,14 +105,14 @@ public class ProductServiceImpl implements ProductService{
 			    			Size size=opt2.get();
 			    			q.setTotal(Integer.parseInt(pairs[i + 1]));
 			    			q.setSize(size);
-			    			q.setProduct(product);
+			    			q.setProduct(p);
 			    			qList.add(q);
 			    			
 			    		}else
 			    			throw new SizeException("Inviled size.");
 		    		}
 		        }
-		        product.setQuantityList(qList);
+		        p.setQuantityList(qList);
 		        quantityRepo.saveAll(qList);
 			}
 			

@@ -53,7 +53,7 @@
         let type=document.getElementById("type").value
         let page=document.getElementById("page").value || 1
         let NoOfItem=document.getElementById("NoOfItem").value || 10
-        let url=`http://localhost:8080/admin/allproduct/${page}/${NoOfItem}?type=${type}&direction=${direction}`
+        let url=`http://localhost:8080/user/allproduct/${page}/${NoOfItem}?type=${type}&direction=${direction}`
         fetch(url, {
             method: "GET"// Change the HTTP method as needed
             // headers: {
@@ -65,15 +65,17 @@
             response.json().then(data => {
                 console.log(data);
                 document.querySelector("#list").innerHTML=[]
-                data.forEach(({name,type,price,manufactureDate,quantityList,image},i)=> {
+                data.forEach(({pid,name,type,price,manufactureDate,quantityList,image},i)=> {
                     let div=document.createElement("div")
                     div.id="main"
+                    let id=document.createElement("h4")
+                    id="Id : "+ pid
                     let n=document.createElement("h2")
                     n="Name : "+name
                     let t=document.createElement("h4")
                     t="Type : "+type
                     let p=document.createElement("h4")
-                    p="Ptice : "+price+" ₹"
+                    p="Price : "+price+" ₹"
                     let m=document.createElement("h4")
                     m="ManufactureDate : "+manufactureDate
                     let list=quantityList
@@ -87,7 +89,7 @@
                     img.src=`${base64ToDataURL(image)}`
                     let sizeQuan=document.createElement("h4")
                     sizeQuan="SizeQuantity : "+sizeList
-                    div.append(img,n,t,p,m,sizeQuan)
+                    div.append(id,img,n,t,p,m,sizeQuan)
                     document.querySelector("#list").append(div)
                 })
             });   

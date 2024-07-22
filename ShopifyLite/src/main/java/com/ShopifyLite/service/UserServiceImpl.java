@@ -8,10 +8,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.ShopifyLite.DTO.UpdateUserDTO;
 import com.ShopifyLite.exception.AmountException;
+import com.ShopifyLite.exception.LoginException;
 import com.ShopifyLite.exception.UserException;
 import com.ShopifyLite.model.Address;
 import com.ShopifyLite.model.Authority;
@@ -71,40 +75,39 @@ public class UserServiceImpl implements UserService{
 		for(Address a:addressList) {
 			a.setUser(user);
 		}
-		Users u=userRepo.save(user);
-//		return "User saves with userId : "+u.getUserId();
-		return u;
+		Users newUser=userRepo.save(user);
+//		return "User saves with userId : "+newUser.getUserId();
+		return newUser;
 	}
 
 	@Override
-	public String updateUser(Users user) {
-		//
-		Optional<Users> opt=userRepo.findById(user.getUserId());
-		if(opt.isPresent()) {
+	public String updateUser(UpdateUserDTO updateUserDTO) throws LoginException {
+
 			//Here we get my user
-			Users usr=opt.get();
-			//updated its field
-			if(user.getDob()!=null) {
-				usr.setDob(user.getDob());
-			}
-			if(user.getEmail()!=null) {
-				usr.setEmail(user.getEmail());
-			}
-			if(user.getName()!=null) {
-				usr.setName(user.getName());
-			}
-			//Here update only if password is there
-			if(user.getPassword()!=null) {
-				usr.setPassword(encoder.encode(user.getPassword()));
-			}
-			if(user.getPhone()!=null) {
-				usr.setPhone(user.getPhone());
-			}
-			//Saved updated user
-			userRepo.save(usr);
-			return "user updated successfully";
-		}else
-			throw new UserException("Inviled userId.");
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Users user = userRepo.findByEmail(authentication.getName())
+				.orElseThrow(() -> new LoginException("Please Login First"));
+		
+		//updated its field
+		if(updateUserDTO.getDob()!=null) {
+			updateUserDTO.setDob(user.getDob());
+		}
+		if(updateUserDTO.getEmail()!=null) {
+			updateUserDTO.setEmail(user.getEmail());
+		}
+		if(updateUserDTO.getName()!=null) {
+			updateUserDTO.setName(user.getName());
+		}
+		//Here update only if password is there
+		if(updateUserDTO.getPassword()!=null) {
+			updateUserDTO.setPassword(encoder.encode(user.getPassword()));
+		}
+		if(updateUserDTO.getPhone()!=null) {
+			updateUserDTO.setPhone(user.getPhone());
+		}
+		//Saved updated user
+		userRepo.save(user);
+		return "user updated successfully";
 	}
 
 	@Override
@@ -119,40 +122,36 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public String addAmount(Integer userId, Float amount) {
-		Optional<Users> opt=userRepo.findById(userId);
-		if(opt.isPresent()) {
-			//Here we get my user and add amount
-			Users user=opt.get();
+	public String addAmount(Integer amount) throws LoginException {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Users user = userRepo.findByEmail(authentication.getName())
+				.orElseThrow(() -> new LoginException("Please Login First"));
 			user.setAmount(user.getAmount()+amount);
 			userRepo.save(user);
 			return "Amount added successfully";
-		}else
-			throw new UserException("Inviled userId.");
 	}
 
 	@Override
-	public String withdrawAmount(Integer userId, Integer amount) {
-		Optional<Users> opt=userRepo.findById(userId);
-		if(opt.isPresent()) {
-			//Here we get my user
-			Users user=opt.get();
-			//Here we check withdraw amount is > amount or not
-			if(user.getAmount()>amount) {
-				//and withdraw amount
-				user.setAmount(user.getAmount()-amount);
-				userRepo.save(user);
-				return "Amount withdrawal successfully";
-			}else
-				throw new AmountException("Insufficient balance.");
+	public String withdrawAmount(Integer amount) throws LoginException {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Users user = userRepo.findByEmail(authentication.getName())
+				.orElseThrow(() -> new LoginException("Please Login First"));
+		//Here we check withdraw amount is > amount or not
+		if(user.getAmount()>amount) {
+			//and withdraw amount
+			user.setAmount(user.getAmount()-amount);
+			userRepo.save(user);
+			return "Amount withdrawal successfully";
 		}else
-			throw new UserException("Inviled userId.");
+			throw new AmountException("Insufficient balance.");
 	}
 
 	@Override
-	public Users getUserById(Integer userId) {
+	public Users getUser() throws LoginException {
 		//Here we use optional class and if user found return it else throw exception.
-		return userRepo.findById(userId).orElseThrow(()->new UserException("Inviled userId"));
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		return userRepo.findByEmail(authentication.getName())
+				.orElseThrow(() -> new LoginException("Please Login First"));
 	}
 
 	@Override

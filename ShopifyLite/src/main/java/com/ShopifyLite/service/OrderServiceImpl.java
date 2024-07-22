@@ -5,9 +5,12 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.ShopifyLite.exception.AmountException;
+import com.ShopifyLite.exception.LoginException;
 import com.ShopifyLite.exception.ProductException;
 import com.ShopifyLite.exception.UserException;
 import com.ShopifyLite.model.Order;
@@ -38,10 +41,12 @@ public class OrderServiceImpl implements OrderService{
 
 	@Override
 	@Transactional
-	public String addOrder(Integer userId, Integer[] pidList,String[] sizeList,Integer[] quantityList) {
+	public String addOrder(Integer[] pidList,String[] sizeList,Integer[] quantityList) throws LoginException{
 		
-	    Users user = userRepo.findById(userId).
-	    		orElseThrow(()-> new UserException("Invalid user id: " + userId));
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Users user = userRepo.findByEmail(authentication.getName())
+				.orElseThrow(() -> new LoginException("Please Login First"));
+		
 	    List<ProductDetails> plist = new ArrayList<>();
 	    Order order = user.getOrder();
         for (int i = 0; i < pidList.length; i++) {
@@ -60,15 +65,16 @@ public class OrderServiceImpl implements OrderService{
 				throw new ProductException("Inviled size.");
 			}
             int totalPrice = quantity * product.getPrice();
-            Float remainingAmount = user.getAmount() - totalPrice;
+            Double remainingAmount = user.getAmount() - totalPrice;
+            if (availableQuantity < quantity) {
+	                throw new ProductException("Invalid quantity, available quantity: " + availableQuantity);
+	        }
             if (remainingAmount < 0) {
             	throw new AmountException("Insufficient amount, add amount: " + Math.abs(remainingAmount));
             }
 	  
             user.setAmount(remainingAmount);
-            if (availableQuantity < quantity) {
-	                throw new ProductException("Invalid quantity, available quantity: " + availableQuantity);
-	        }
+            
 
             ProductDetails productDet = new ProductDetails();
             productDet.setSize(size);
@@ -92,27 +98,41 @@ public class OrderServiceImpl implements OrderService{
 		
 	}
 
-//	@Override
-//	public String deleteOrder(Integer userId, Integer[] pid) {
-////		Users user = userRepo.findById(userId).
-////	    		orElseThrow(()-> new UserException("Invalid user id: " + userId));
-////		Product product = productRepo.findById(pid)
-////                .orElseThrow(() -> new ProductException("Invalid product id: " + pid));
-//		return null;
-//	}
+	@Override
+	@Transactional
+	public String deleteOrder(Integer[] pid) throws LoginException{
+		
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Users user = userRepo.findByEmail(authentication.getName())
+				.orElseThrow(() -> new LoginException("Please Login First"));
+		Integer amount=0;
+		for(Integer id:pid) {
+			ProductDetails productDetails = productDetailsRepo.findById(id)
+					.orElseThrow(() -> new ProductException("Invalid product id: " + pid));
+			amount+=productDetails.getPrice()*productDetails.getQuantity();
+			
+			int size=productRepo.getSizes(productDetails.getSize(),id);
+			productRepo.updateTotal(size+productDetails.getQuantity(),id,productDetails.getSize());
+			productDetailsRepo.delete(productDetails);
+		}
+		user.setAmount(user.getAmount()+amount);
+		userRepo.save(user);
+		
+		return "Oreder successfully canceled.";
+	}
 
 	@Override
-	public List<ProductDetails> allorder(Integer userId) {
-		Optional<Users> opt=userRepo.findById(userId);
-		if(opt.isPresent()) {
-			Users user=opt.get();
-			List<ProductDetails> list=user.getOrder().getProductDetailsList().stream().filter(p->p.getCart()==null).toList();
-			if(list.size()>0) {
-				return list;
-			}else
-				throw new ProductException("Empty list.");
+	public List<ProductDetails> allorder() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Users user = userRepo.findByEmail(authentication.getName())
+				.orElseThrow(() -> new LoginException("Please Login First"));
+		
+		List<ProductDetails> list=user.getOrder().getProductDetailsList().stream()
+				.filter(p->p.getCart()==null).toList();
+		if(list.size()>0) {
+			return list;
 		}else
-			throw new UserException("Invilid user id : "+userId);
+			throw new ProductException("Empty list.");
 	
 	}
 

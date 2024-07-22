@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,29 +19,28 @@ import com.ShopifyLite.service.CartService;
 import jakarta.validation.Valid;
 
 @RestController
+@RequestMapping("/user")
 public class CartController {
 	
 	@Autowired
 	private CartService cartService;
 
 	
-	@PostMapping("/cart/{userId}/{pId}")
-	public ResponseEntity<String> addItemController(@Valid @PathVariable("userId") Integer userId,
-			@Valid @PathVariable("pId") Integer pId,@Valid @RequestParam String size){
-		String res=cartService.addItem(userId, pId, size);
+	@PostMapping("/cart/{pId}")
+	public ResponseEntity<String> addItemController(@Valid @PathVariable("pId") Integer pId,@Valid @RequestParam String size){
+		String res=cartService.addItem(pId, size);
 		return new ResponseEntity<>(res,HttpStatus.CREATED);
 	}
 	
-	@DeleteMapping("/cart/{userId}/{pId}")
-	public ResponseEntity<String> deleteItemController(@Valid @PathVariable("userId") Integer userId,
-			@Valid @PathVariable("pId") Integer pId,@Valid @RequestParam String size){
-		String res=cartService.deleteItem(userId, pId,size);
+	@DeleteMapping("/cart/remove/{pId}")
+	public ResponseEntity<String> deleteItemController(@Valid @PathVariable("pId") Integer pId,@Valid @RequestParam String size){
+		String res=cartService.deleteItem(pId,size);
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	
-	@GetMapping("/cart/{userId}")
-	public ResponseEntity<List<ProductDetails>> getAllCartItemController(@Valid @PathVariable("userId") Integer userId){
-		List<ProductDetails> res=cartService.getAllCartItem(userId);
+	@GetMapping("/cart")
+	public ResponseEntity<List<ProductDetails>> getAllCartItemController(){
+		List<ProductDetails> res=cartService.getAllCartItem();
 		return new ResponseEntity<>(res,HttpStatus.OK);
 	}
 	

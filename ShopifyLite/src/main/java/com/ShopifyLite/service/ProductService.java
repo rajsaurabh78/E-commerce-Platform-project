@@ -4,12 +4,13 @@ import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ShopifyLite.DTO.UpdateProductDTO;
 import com.ShopifyLite.model.Product;
 
 public interface ProductService{
 	
 	public String addProduct(Product product,MultipartFile image);
-	public String updateProduct(Product product);
+	public String updateProduct(UpdateProductDTO updateProductDTO);
 	public String deleteProduct(Integer pId);
 	public Product getProductById(Integer pId);
 	public List<Product> getProductByName(String name);

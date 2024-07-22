@@ -22,9 +22,9 @@ public class LoginController {
 	public ResponseEntity<Users> getLoggedInCustomerDetailsHandler(Authentication auth){
 		
 		
-		 Users customer= userRepository.findByEmail(auth.getName()).orElseThrow(() -> new BadCredentialsException("Invalid Username or password"));
+		 Users user= userRepository.findByEmail(auth.getName()).orElseThrow(() -> new BadCredentialsException("Invalid Username or password"));
 		
-		 return new ResponseEntity<>(customer, HttpStatus.ACCEPTED);
+		 return new ResponseEntity<>(user, HttpStatus.ACCEPTED);
 		
 		
 	}
